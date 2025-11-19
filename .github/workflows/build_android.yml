@@ -1,0 +1,32 @@
+    name: Build Blood Pressure & Pulse Android App
+
+    on:
+      workflow_dispatch: # This enables manual triggering of the workflow
+
+    jobs:
+      build_android:
+        runs-on: ubuntu-latest # Or macOS-latest for potentially faster Flutter builds
+
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v6
+
+          - name: Set up Flutter
+            uses: subosito/flutter-action@v2
+            with:
+              channel: 'stable'
+
+          - name: Get Flutter dependencies
+            run: flutter pub get
+
+          - name : Run Flutter tests
+            run: flutter test
+            
+          - name: Build Android App (APK)
+            run: flutter build apk --release
+
+          - name: Upload APK artifact
+            uses: actions/upload-artifact@v5
+            with:
+              name: android-apk
+              path: build/app/outputs/flutter-apk/app-release.apk
