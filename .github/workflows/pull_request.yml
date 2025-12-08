@@ -1,4 +1,6 @@
 name: Analyze and Test on Pull Request
+permissions:
+  contents: read
 
 on:
   pull_request:
