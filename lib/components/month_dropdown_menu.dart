@@ -27,7 +27,6 @@ enum MonthLabel {
 typedef MonthEntry = DropdownMenuEntry<MonthLabel>;
 
 class MonthSelector extends StatefulWidget {
-
   const MonthSelector({super.key, required this.onMonthSelected});
 
   final ValueChanged<int> onMonthSelected;
@@ -37,7 +36,6 @@ class MonthSelector extends StatefulWidget {
 }
 
 class _MonthSelectorState extends State<MonthSelector> {
-  
   final TextEditingController _monthController = TextEditingController();
 
   @override
