@@ -1,8 +1,56 @@
 import 'package:bp_pulse_log/components/month_dropdown_menu.dart';
-
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  group('MonthDropdownMenu Widget Tests', () {
+    testWidgets('MonthDropdownMenu displays months and handles selection', (
+      WidgetTester tester,
+    ) async {
+      final MonthLabel april = MonthLabel.getByNumber(DateTime.april);
+      int? selectedMonth;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          title: 'MonthDropdownMenu Test',
+          home: Scaffold(
+            body: Center(
+              child: MonthDropdownMenu(
+                initialValue: april.number,
+                onMonthChanged: (int value) {
+                  selectedMonth = value;
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // Verify that april is displayed, it will be found twice, once in the button and once in the menu
+      expect(find.text(april.label), findsExactly(2));
+
+      // Verify that all months are displayed in the dropdown
+      for (var month in MonthLabel.values) {
+        if (month == april) {
+          continue; // Skip current month as it will exist twice (see next expect)
+        }
+        expect(find.text(month.label), findsOneWidget);
+      }
+
+      // Simulate selecting a month
+      MonthLabel november = MonthLabel.getByNumber(DateTime.november);
+
+      await tester.tap(warnIfMissed: false, find.byType(MenuItemButton).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(november.label).last); // Select november
+      await tester.pumpAndSettle();
+
+      // Verify that the callback was called with the correct month
+      expect(find.text(november.label), findsExactly(2));
+      expect(selectedMonth, november.number);
+    });
+  });
+
   group('MonthLabel Tests', () {
     test('Month Name and Number', () {
       expect(MonthLabel.january.label, equals('January'));
