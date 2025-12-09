@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'components/date_picker_input_field.dart';
 import 'components/numeric_input_field.dart';
 import 'components/time_picker_input_field.dart';
-import 'db/database_helper.dart';
+import 'db/record_repository.dart';
 import 'db/record.dart';
 
 class RecordInputScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _RecordInputScreenState extends State<RecordInputScreen> {
   @override
   void initState() {
     super.initState();
-    _mostRecentRecord = DatabaseHelper().getMostRecentRecord();
+    _mostRecentRecord = RecordRepository().getMostRecentRecord();
   }
 
   void _updateDay(DateTime date) {
@@ -58,7 +58,7 @@ class _RecordInputScreenState extends State<RecordInputScreen> {
   }
 
   Future<void> _saveRecord() async {
-    final dbHelper = DatabaseHelper();
+    final recordRepository = RecordRepository();
     final record = Record(
       date: DateTime(
         _selectedDate.year,
@@ -71,7 +71,7 @@ class _RecordInputScreenState extends State<RecordInputScreen> {
       diastolic: _diastolic!,
       heartRate: _pulse!,
     );
-    await dbHelper.insertRecord(record);
+    await recordRepository.insertRecord(record);
 
     // Reset form after saving
     setState(() {
@@ -84,7 +84,7 @@ class _RecordInputScreenState extends State<RecordInputScreen> {
       _systolic = null;
       _diastolic = null;
       _pulse = null;
-      _mostRecentRecord = DatabaseHelper().getMostRecentRecord();
+      _mostRecentRecord = RecordRepository().getMostRecentRecord();
     });
   }
 
