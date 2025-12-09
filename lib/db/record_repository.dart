@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'record.dart';
 
-class DatabaseHelper {
+class RecordRepository {
   static Database? _database;
 
   Future<Database> get database async {
@@ -64,7 +64,7 @@ class DatabaseHelper {
     final List<Map<String, dynamic>> maps = await db.query(
       'records',
       orderBy: 'date DESC',
-      limit: 5,
+      limit: number,
     );
 
     return List.generate(maps.length, (i) {

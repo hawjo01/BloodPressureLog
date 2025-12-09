@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'components/month_dropdown_menu.dart';
 import 'components/year_dropdown_menu.dart';
-import 'db/database_helper.dart';
+import 'db/record_repository.dart';
 import 'db/record.dart';
 import 'utils/line_chart_utils.dart';
 
@@ -44,8 +44,8 @@ class _HistoryChartScreenState extends State<HistoryChartScreen> {
   }
 
   Future<List<Record>> _getRecordsForMonth(int year, int month) async {
-    DatabaseHelper dbHelper = DatabaseHelper();
-    return await dbHelper.getRecordsForMonth(year, month);
+    RecordRepository recordRepository = RecordRepository();
+    return await recordRepository.getRecordsForMonth(year, month);
   }
 
   @override
