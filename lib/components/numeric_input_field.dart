@@ -9,7 +9,11 @@ class NumericInputField extends StatelessWidget {
     required dynamic Function(int) onChange,
     bool required = true,
     required TextEditingController controller,
-  }) : _onChange = onChange, _hint = hint, _label = label, _required = required, _controller = controller;
+  }) : _onChange = onChange,
+       _hint = hint,
+       _label = label,
+       _required = required,
+       _controller = controller;
 
   final String _label;
   final String _hint;
@@ -24,7 +28,8 @@ class NumericInputField extends StatelessWidget {
         controller: _controller,
         keyboardType: TextInputType.number, // Displays a numeric keyboard
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.digitsOnly, // Restricts input to digits only
+          FilteringTextInputFormatter
+              .digitsOnly, // Restricts input to digits only
         ],
         decoration: InputDecoration(
           border: OutlineInputBorder(),
@@ -32,14 +37,15 @@ class NumericInputField extends StatelessWidget {
           hintText: _hint,
         ),
         validator: (value) {
-          if (_required && (value == null || value.isEmpty)) {
+          if (_required &&
+              (value == null || value.isEmpty || int.tryParse(value) == null)) {
             return 'Required';
           }
           return null;
         },
         onSaved: (value) {
           if (value != null && value.isNotEmpty) {
-          _onChange(int.parse(value));
+            _onChange(int.parse(value));
           }
         },
       ),
