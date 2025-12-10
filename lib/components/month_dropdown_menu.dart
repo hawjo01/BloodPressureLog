@@ -24,35 +24,42 @@ enum MonthLabel {
   }
 }
 
-typedef MonthEntry = DropdownMenuEntry<MonthLabel>;
+class MonthDropdownMenu extends StatefulWidget {
+  const MonthDropdownMenu({
+    super.key,
+    required this.initialValue,
+    required this.onMonthChanged,
+  });
 
-class MonthSelector extends StatefulWidget {
-  const MonthSelector({super.key, required this.onMonthSelected});
-
-  final ValueChanged<int> onMonthSelected;
+  final int initialValue;
+  final ValueChanged<int> onMonthChanged;
 
   @override
-  State<MonthSelector> createState() => _MonthSelectorState();
+  State<MonthDropdownMenu> createState() => _MonthDropdownMenuState();
 }
 
-class _MonthSelectorState extends State<MonthSelector> {
+class _MonthDropdownMenuState extends State<MonthDropdownMenu> {
   final TextEditingController _monthController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final MonthLabel initialSelection = MonthLabel.getByNumber(
+      widget.initialValue,
+    );
+
     return DropdownMenu<MonthLabel>(
       controller: _monthController,
-      initialSelection: MonthLabel.getByNumber(DateTime.now().month),
+      initialSelection: initialSelection,
       label: const Text('Month'),
       dropdownMenuEntries: MonthLabel.values.map((month) {
-        return MonthEntry(
+        return DropdownMenuEntry<MonthLabel>(
           value: month,
           label: month.name[0].toUpperCase() + month.name.substring(1),
         );
       }).toList(),
       onSelected: (MonthLabel? month) {
         if (month != null) {
-          widget.onMonthSelected(month.number);
+          widget.onMonthChanged(month.number);
         }
       },
     );

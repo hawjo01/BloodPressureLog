@@ -36,7 +36,7 @@ class _HistoryChartScreenState extends State<HistoryChartScreen> {
     });
   }
 
-  void _onMonthChanged(int month) {
+  void _onSelectedMonthChanged(int month) {
     setState(() {
       _selectedMonth = month;
       _recordsFuture = _getRecordsForMonth(_selectedYear, _selectedMonth);
@@ -58,7 +58,10 @@ class _HistoryChartScreenState extends State<HistoryChartScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MonthSelector(onMonthSelected: _onMonthChanged),
+              MonthDropdownMenu(
+                initialValue: _selectedMonth,
+                onMonthChanged: _onSelectedMonthChanged,
+              ),
               const SizedBox(width: 20),
               YearSelector(onYearSelected: _onYearChanged),
             ],
