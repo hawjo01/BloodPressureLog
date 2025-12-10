@@ -1,6 +1,4 @@
 name: Analyze and Test on Pull Request
-permissions:
-  contents: read
 
 on:
   pull_request:
@@ -10,6 +8,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest # Or macos-latest for integration tests
+    permissions: 
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -25,5 +25,30 @@ jobs:
       - name: Analyze code
         run: flutter analyze
 
-      - name: Run tests
-        run: flutter test
+      - name: Prepare for full test coverage
+        run: flutter pub run full_coverage
+
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Install lcov
+        run: sudo apt-get install lcov
+
+      - name: Generate HTML coverage report
+        run: genhtml coverage/lcov.info -o coverage/html
+
+      - name: Upload coverage report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/html
+
+      - name: Report code coverage
+        uses: zgosalvez/github-actions-report-lcov@v4
+        with:
+          coverage-files: coverage/lcov.info
+          minimum-coverage: 0
+          artifact-name: code-coverage-report
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          working-directory: ./
+          update-comment: true          
