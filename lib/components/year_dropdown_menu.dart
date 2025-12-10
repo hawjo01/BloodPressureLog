@@ -1,32 +1,36 @@
 import 'package:flutter/material.dart';
 
-class YearSelector extends StatefulWidget {
+class YearDropdownMenu extends StatefulWidget {
+  const YearDropdownMenu({
+    super.key,
+    required this.initialValue,
+    required this.years,
+    required this.onYearChanged,
+  });
 
-  const YearSelector({super.key, required this.onYearSelected});
-
-  final ValueChanged<int> onYearSelected;
+  final int initialValue;
+  final List<int> years;
+  final ValueChanged<int> onYearChanged;
 
   @override
-  State<YearSelector> createState() => _YearSelectorState();
+  State<YearDropdownMenu> createState() => _YearDropdownMenuState();
 }
 
-class _YearSelectorState extends State<YearSelector> {
-  
+class _YearDropdownMenuState extends State<YearDropdownMenu> {
   final TextEditingController _yearController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<int>(
       controller: _yearController,
-      initialSelection: DateTime.now().year,
+      initialSelection: widget.initialValue,
       label: const Text('Year'),
-      dropdownMenuEntries: List.generate(10, (index) {
-        final year = DateTime.now().year - index;
+      dropdownMenuEntries: widget.years.map((year) {
         return DropdownMenuEntry(value: year, label: year.toString());
-      }),
+      }).toList(),
       onSelected: (int? year) {
         if (year != null) {
-          widget.onYearSelected(year);
+          widget.onYearChanged(year);
         }
       },
     );

@@ -18,6 +18,10 @@ class HistoryChartScreen extends StatefulWidget {
 enum ChartType { line, table }
 
 class _HistoryChartScreenState extends State<HistoryChartScreen> {
+  final List<int> _years = List.generate(5, (index) {
+    return DateTime.now().year - index;
+  });
+
   int _selectedYear = DateTime.now().year;
   int _selectedMonth = DateTime.now().month;
   ChartType _selectedChartType = ChartType.line;
@@ -29,7 +33,7 @@ class _HistoryChartScreenState extends State<HistoryChartScreen> {
     _recordsFuture = _getRecordsForMonth(_selectedYear, _selectedMonth);
   }
 
-  void _onYearChanged(int year) {
+  void _onSelectedYearChanged(int year) {
     setState(() {
       _selectedYear = year;
       _recordsFuture = _getRecordsForMonth(_selectedYear, _selectedMonth);
@@ -63,7 +67,11 @@ class _HistoryChartScreenState extends State<HistoryChartScreen> {
                 onMonthChanged: _onSelectedMonthChanged,
               ),
               const SizedBox(width: 20),
-              YearSelector(onYearSelected: _onYearChanged),
+              YearDropdownMenu(
+                initialValue: _selectedYear,
+                years: _years,
+                onYearChanged: _onSelectedYearChanged,
+              ),
             ],
           ),
           const SizedBox(height: 10),
