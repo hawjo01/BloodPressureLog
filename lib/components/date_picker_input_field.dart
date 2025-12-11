@@ -5,11 +5,11 @@ class DatePickerInputField extends StatefulWidget {
   const DatePickerInputField({
     super.key,
     required this.initialDate,
-    required this.onDateSelected,
+    required this.onDateChanged,
   });
 
   final DateTime initialDate;
-  final Function(DateTime) onDateSelected;
+  final Function(DateTime) onDateChanged;
 
   @override
   State<DatePickerInputField> createState() => _DatePickerInputFieldState();
@@ -31,7 +31,7 @@ class _DatePickerInputFieldState extends State<DatePickerInputField> {
         _selectedDate = picked;
         _dateController.text = formatDate(_selectedDate!);
       });
-      widget.onDateSelected(picked);
+      widget.onDateChanged(picked);
     }
   }
 
