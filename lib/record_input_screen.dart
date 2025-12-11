@@ -101,7 +101,7 @@ class _RecordInputScreenState extends State<RecordInputScreen> {
                   Expanded(
                     child: DatePickerInputField(
                       initialDate: _selectedDate,
-                      onDateSelected: (date) => _updateDay(date),
+                      onDateChanged: (date) => _updateDay(date),
                     ),
                   ),
                   const SizedBox(width: 16.0),
@@ -149,7 +149,7 @@ class _RecordInputScreenState extends State<RecordInputScreen> {
                         _saveRecord();
                         WidgetsBinding.instance.focusManager.primaryFocus
                             ?.unfocus();
-        
+
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Record saved')),
                         );
@@ -194,7 +194,8 @@ class _RecordInputScreenState extends State<RecordInputScreen> {
                   final record = snapshot.data!;
                   // return Text("foobar");
                   return ListTile(
-                    title: Text(DateFormat('EEE, MMM d, y h:mm a').format(record.date),
+                    title: Text(
+                      DateFormat('EEE, MMM d, y h:mm a').format(record.date),
                     ),
                     subtitle: Text(
                       'Systolic: ${record.systolic}, Diastolic: ${record.diastolic}, Pulse: ${record.heartRate}',
