@@ -1,4 +1,4 @@
-import 'package:bp_pulse_log/components/time_picker_input_field.dart';
+import 'package:bp_pulse_log/widgets/time_picker_input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
