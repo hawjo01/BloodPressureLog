@@ -47,6 +47,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  build_runner: ^2.4.11
+  sqflite_common_ffi: ^2.4.0
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -56,7 +59,8 @@ dev_dependencies:
   test: ^1.26.3
 
   # This package is used to generate full test code coverage reports
-  full_coverage: ^1.0.0
+ # full_coverage: ^1.0.0
+  mockito: ^5.6.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
