@@ -1,4 +1,4 @@
-import 'package:bp_pulse_log/components/month_dropdown_menu.dart';
+import 'package:bp_pulse_log/widgets/month_dropdown_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

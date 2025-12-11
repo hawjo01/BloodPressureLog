@@ -1,12 +1,11 @@
-import 'package:fl_chart/fl_chart.dart';
+import 'package:bp_pulse_log/widgets/month_dropdown_menu.dart';
+import 'package:bp_pulse_log/widgets/records_line_chart.dart';
+import 'package:bp_pulse_log/widgets/records_table.dart';
+import 'package:bp_pulse_log/widgets/year_dropdown_menu.dart';
+import 'package:bp_pulse_log/db/record.dart';
+import 'package:bp_pulse_log/db/record_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-import 'components/month_dropdown_menu.dart';
-import 'components/year_dropdown_menu.dart';
-import 'db/record_repository.dart';
-import 'db/record.dart';
-import 'utils/line_chart_utils.dart';
 
 class HistoryChartScreen extends StatefulWidget {
   const HistoryChartScreen({super.key});
@@ -123,116 +122,9 @@ class _HistoryChartScreenState extends State<HistoryChartScreen> {
   Widget _buildChart(List<Record> records) {
     switch (_selectedChartType) {
       case ChartType.line:
-        return _buildLineChart(records);
+        return RecordsLineChart(records: records, year: _selectedYear, month: _selectedMonth);
       case ChartType.table:
-        return _buildTableChart(records);
+        return RecordsTable(records: records);
     }
-  }
-
-  Widget _buildTableChart(List<Record> records) {
-    return DataTable(
-      columns: const [
-        DataColumn(label: Text('Date')),
-        DataColumn(
-          label: Text('SBP'),
-          numeric: true,
-          tooltip: 'Systolic Blood Pressure',
-        ),
-        DataColumn(
-          label: Text('DBP'),
-          numeric: true,
-          tooltip: 'Diastolic Blood Pressure',
-        ),
-        DataColumn(label: Text('PR'), numeric: true, tooltip: 'Pulse Rate'),
-      ],
-      rows: records
-          .map(
-            (record) => DataRow(
-              cells: [
-                DataCell(Text(DateFormat('EEE hh:mm a').format(record.date))),
-                DataCell(Text(record.systolic.toString())),
-                DataCell(Text(record.diastolic.toString())),
-                DataCell(Text(record.heartRate.toString())),
-              ],
-            ),
-          )
-          .toList(),
-    );
-  }
-
-  Widget _buildLineChart(List<Record> records) {
-    final systolics = records.asMap().entries.map((entry) {
-      final index = entry.value.date.day.toDouble();
-      final systolic = entry.value.systolic.toDouble();
-      return FlSpot(index, systolic);
-    }).toList();
-
-    final diastolics = records.asMap().entries.map((entry) {
-      final index = entry.value.date.day.toDouble();
-      final diastolic = entry.value.diastolic.toDouble();
-      return FlSpot(index, diastolic);
-    }).toList();
-
-    final minY = FlChartUtils.findMinY(diastolics);
-    final maxY = FlChartUtils.findMaxY(systolics);
-
-    return Container(
-      padding: const EdgeInsets.all(10),
-      width: double.infinity,
-      height: 400,
-      child: LineChart(
-        LineChartData(
-          gridData: const FlGridData(show: true),
-          titlesData: FlTitlesData(
-            show: true,
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                minIncluded: false,
-                maxIncluded: false,
-              ),
-            ),
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                minIncluded: false,
-                maxIncluded: false,
-                reservedSize: 40,
-              ),
-            ),
-          ),
-          borderData: FlBorderData(
-            show: true,
-            border: Border.all(color: const Color(0xff37434d), width: 1),
-          ),
-          minX: -1.0,
-          maxX: _getMaxX(),
-          minY: minY - 10,
-          maxY: maxY + 10,
-          lineBarsData: [
-            _lineChartBarData(systolics, Colors.blue),
-            _lineChartBarData(diastolics, Colors.red),
-          ],
-        ),
-      ),
-    );
-  }
-
-  double _getMaxX() {
-    return DateUtils.getDaysInMonth(_selectedYear, _selectedMonth) + 1;
-  }
-
-  LineChartBarData _lineChartBarData(List<FlSpot> spots, Color color) {
-    return LineChartBarData(
-      spots: spots,
-      isCurved: false,
-      color: color,
-      barWidth: 3,
-      isStrokeCapRound: true,
-      dotData: const FlDotData(show: true),
-      belowBarData: BarAreaData(show: false),
-    );
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'components/date_picker_input_field.dart';
-import 'components/numeric_input_field.dart';
-import 'components/time_picker_input_field.dart';
+import 'widgets/date_picker_input_field.dart';
+import 'widgets/numeric_input_field.dart';
+import 'widgets/time_picker_input_field.dart';
 import 'db/record_repository.dart';
 import 'db/record.dart';
 
