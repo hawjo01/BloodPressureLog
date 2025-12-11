@@ -4,11 +4,11 @@ class TimePickerInputField extends StatefulWidget {
   const TimePickerInputField({
     super.key,
     required this.initialTime,
-    required this.onTimeSelected,
+    required this.onTimeChanged,
   });
 
   final TimeOfDay initialTime;
-  final Function(TimeOfDay) onTimeSelected;
+  final Function(TimeOfDay) onTimeChanged;
 
   @override
   State<TimePickerInputField> createState() => _TimePickerInputFieldState();
@@ -31,7 +31,7 @@ class _TimePickerInputFieldState extends State<TimePickerInputField> {
       if (context.mounted) {
         _timeController.text = _selectedTime!.format(context);
       }
-      widget.onTimeSelected(picked);
+      widget.onTimeChanged(picked);
     }
   }
 

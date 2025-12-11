@@ -108,7 +108,7 @@ class _RecordInputScreenState extends State<RecordInputScreen> {
                   Expanded(
                     child: TimePickerInputField(
                       initialTime: _selectedTime,
-                      onTimeSelected: (time) => _updateTime(time),
+                      onTimeChanged: (time) => _updateTime(time),
                     ),
                   ),
                 ],
