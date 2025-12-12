@@ -1,91 +1,148 @@
 import 'package:bp_pulse_log/db/record_repository.dart';
 import 'package:bp_pulse_log/db/record.dart';
-import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'dart:io';
-
-
-// Create a mock for the database factory
-//class MockDatabaseFactory extends Mock implements DatabaseFactory {}
-
-class MockDatabaseFactory extends Mock implements DatabaseFactory {
-  @override
-  Future<Database> openDatabase(String? path, {OpenDatabaseOptions? options}) {
-    super.noSuchMethod(
-      Invocation.method(
-        #openDatabase,
-        [path],
-        {#options: options},
-      ),
-      returnValue: Future<Database>.value(
-        databaseFactoryFfi.openDatabase(inMemoryDatabasePath, options: options),
-      ),
-    );
-    return databaseFactoryFfi.openDatabase(inMemoryDatabasePath, options: options);
-  }
-}
 
 void main() {
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
 
-  group(
-    'RecordRepository',
-    () {
-      //MockDatabaseFactory mockFactory;
-      late Directory tempDir;
+  RecordRepository? recordRepository;
 
-      setUp(() async {
-        //mockFactory = MockDatabaseFactory();
+  setUp(() {
+    recordRepository = RecordRepository(path: ':memory:');
+  });
 
-        tempDir = await Directory.systemTemp.createTemp('pb_pulse_log_test_db');
-        // Provide a mock implementation for getDatabasesPath
-        // when(
-        //   mockFactory.getDatabasesPath(),
-        // ).thenAnswer((_) async => Future.value(tempDir.path));
-        // You might also need to mock openDatabase if your service uses it
+  tearDown(() async {
+    recordRepository?.close();
+  });
 
-        
-//        when(mockFactory.openDatabase(tempDir.path, options: anyNamed('options')))
-        when(MockDatabaseFactory().openDatabase(argThat(contains('records_database.db')), options: anyNamed('options')))
-            .thenAnswer((invocation) async =>
-            databaseFactoryFfi.openDatabase(inMemoryDatabasePath, options: invocation.namedArguments[Symbol('options')]));
-        // when(mockFactory.openDatabase(path: anyNamed('path'), version: anyNamed('version'), options: anyNamed('options')))
-        //     .thenAnswer((_) async =>
-        //     databaseFactoryFfi.openDatabase(inMemoryDatabasePath)
-        //     Future.value(null)); // Or a mock database instance
-      });
+  test('empty database returns no records', () async {
+    final Record? mostRecentRecord = await recordRepository!
+        .getMostRecentRecord();
+    expect(mostRecentRecord, isNull);
 
-      // tearDown(() async {
-      //   if (await tempDir.exists()) {
-      //     await tempDir.delete(recursive: true);
-      //   }
-      // });
+    final List<Record> mostRecentRecords = await recordRepository!
+        .getMostRecentRecords(10);
+    expect(mostRecentRecords, isEmpty);
 
-      // tearDown(() async {
-      //   await database.close();
-      // });
+    final List<Record> monthRecords = await recordRepository!
+        .getRecordsForMonth(2025, 11);
+    expect(monthRecords, isEmpty);
+  });
 
-      test('insert and retrieve record', () async {
-        final record = Record(
-          date: DateTime.now(),
-          systolic: 120,
-          diastolic: 80,
-          heartRate: 70,
-        );
+  test('insert and retrieve a single record', () async {
+    final List<Record> noRecords = await recordRepository!.getMostRecentRecords(
+      10,
+    );
+    expect(noRecords, isEmpty);
 
-        final recordRepository = RecordRepository();
-        await recordRepository.insertRecord(record);
-        final records = await recordRepository.getRecords();
+    Record record = Record(
+      date: DateTime.now(),
+      systolic: 120,
+      diastolic: 80,
+      heartRate: 70,
+    );
 
-        expect(records.length, 1);
-        expect(records[0].systolic, 120);
-        expect(records[0].diastolic, 80);
-        expect(records[0].heartRate, 70);
-        expect(records[0].id, isNotNull);
-      });
-    },
-    // onPlatform: {'windows': Skip('This test is problematic on Windows')},
-  );
+    await recordRepository!.insertRecord(record);
+    final Record? mostRecent = await recordRepository!.getMostRecentRecord();
+
+    expect(mostRecent, isNotNull);
+    expect(mostRecent!.systolic, 120);
+    expect(mostRecent.diastolic, 80);
+    expect(mostRecent.heartRate, 70);
+    expect(mostRecent.id, isNotNull);
+
+    final List<Record> mostRecentRecords = await recordRepository!
+        .getMostRecentRecords(2);
+    expect(mostRecentRecords.length, 1);
+    expect(mostRecentRecords[0].systolic, 120);
+    expect(mostRecentRecords[0].diastolic, 80);
+    expect(mostRecentRecords[0].heartRate, 70);
+    expect(mostRecentRecords[0].id, isNotNull);
+
+    final List<Record> monthRecords = await recordRepository!
+        .getRecordsForMonth(record.date.year, record.date.month);
+    expect(monthRecords.length, 1);
+    expect(monthRecords[0].systolic, 120);
+    expect(monthRecords[0].diastolic, 80);
+    expect(monthRecords[0].heartRate, 70);
+  });
+
+  test('insert and retrieve multiple records', () async {
+    final List<Record> noRecords = await recordRepository!.getMostRecentRecords(
+      10,
+    );
+    expect(noRecords, isEmpty);
+
+    Record record1 = Record(
+      date: DateTime(2025, 12, 15, 11, 08),
+      systolic: 120,
+      diastolic: 80,
+      heartRate: 70,
+    );
+
+    Record record2 = Record(
+      date: DateTime(2025, 12, 14, 14, 30),
+      systolic: 130,
+      diastolic: 90,
+      heartRate: 80,
+    );
+
+    Record record3 = Record(
+      date: DateTime(2025, 12, 13, 10, 15),
+      systolic: 125,
+      diastolic: 85,
+      heartRate: 75,
+    );
+
+    // Different month than previous 3 records
+    Record record4 = Record(
+      date: DateTime(2025, 11, 13, 8, 02),
+      systolic: 125,
+      diastolic: 85,
+      heartRate: 75,
+    );
+
+    await recordRepository!.insertRecord(record1);
+    await recordRepository!.insertRecord(record2);
+    await recordRepository!.insertRecord(record3);
+    await recordRepository!.insertRecord(record4);
+
+    final Record? mostRecent = await recordRepository!.getMostRecentRecord();
+
+    expect(mostRecent, isNotNull);
+    expect(mostRecent!.systolic, record1.systolic);
+    expect(mostRecent.diastolic, record1.diastolic);
+    expect(mostRecent.heartRate, record1.heartRate);
+    expect(mostRecent.id, isNotNull);
+
+    final List<Record> mostRecentRecords = await recordRepository!
+        .getMostRecentRecords(2);
+    expect(mostRecentRecords.length, 2);
+    expect(mostRecentRecords[0].systolic, record1.systolic);
+    expect(mostRecentRecords[0].diastolic, record1.diastolic);
+    expect(mostRecentRecords[0].heartRate, record1.heartRate);
+    expect(mostRecentRecords[0].id, isNotNull);
+
+    expect(mostRecentRecords[1].systolic, record2.systolic);
+    expect(mostRecentRecords[1].diastolic, record2.diastolic);
+    expect(mostRecentRecords[1].heartRate, record2.heartRate);
+    expect(mostRecentRecords[1].id, isNotNull);
+
+    final List<Record> monthRecords = await recordRepository!
+        .getRecordsForMonth(record1.date.year, record1.date.month);
+    expect(monthRecords.length, 3);
+    expect(monthRecords[0].systolic, record1.systolic);
+    expect(monthRecords[0].diastolic, record1.diastolic);
+    expect(monthRecords[0].heartRate, record1.heartRate);
+
+    expect(monthRecords[1].systolic, record2.systolic);
+    expect(monthRecords[1].diastolic, record2.diastolic);
+    expect(monthRecords[1].heartRate, record2.heartRate);
+
+    expect(monthRecords[2].systolic, record3.systolic);
+    expect(monthRecords[2].diastolic, record3.diastolic);
+    expect(monthRecords[2].heartRate, record3.heartRate);
+  });
 }

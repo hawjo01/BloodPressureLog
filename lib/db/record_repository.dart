@@ -4,6 +4,10 @@ import 'record.dart';
 
 class RecordRepository {
   static Database? _database;
+  String? path;
+
+  // Path is optional; if not provided, a default path will be used.  Used for testing.
+  RecordRepository({this.path});
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -12,9 +16,10 @@ class RecordRepository {
   }
 
   Future<Database> initDatabase() async {
-    String path = join(await getDatabasesPath(), 'records_database.db');
+    path ??= join(await getDatabasesPath(), 'records_database.db');
+
     return await openDatabase(
-      path,
+      path!,
       version: 1,
       onCreate: (db, version) {
         return db.execute(
@@ -33,26 +38,11 @@ class RecordRepository {
     );
   }
 
-  Future<List<Record>> getRecords() async {
-    final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('records');
-
-    return List.generate(maps.length, (i) {
-      return Record.fromMap(maps[i]);
-    });
-  }
-
   // Add methods for update, delete, etc. as needed
   Future<Record?> getMostRecentRecord() async {
-    final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      'records',
-      orderBy: 'date DESC',
-      limit: 1,
-    );
-
-    if (maps.isNotEmpty) {
-      return Record.fromMap(maps[0]);
+    final List<Record> mostRecentRecords = await getMostRecentRecords(1);
+    if (mostRecentRecords.isNotEmpty) {
+      return mostRecentRecords[0];
     } else {
       return null;
     }
@@ -88,4 +78,10 @@ class RecordRepository {
       return Record.fromMap(maps[i]);
     });
   }
+
+  void close() async {
+    final db = await database;
+    db.close();
+    _database = null;
+  } 
 }
