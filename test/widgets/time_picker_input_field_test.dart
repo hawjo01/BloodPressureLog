@@ -51,6 +51,20 @@ void main() {
         // Verify that the callback was called with the correct date
         expect(selectedTime, isNotNull);
         expect(selectedTime!, equals(const TimeOfDay(hour: 22, minute: 30)));
+
+        // Simulate tapping on the text field to open the date picker
+        await tester.tap(find.text('10:30 PM'));
+        await tester.pumpAndSettle();
+        expect(find.byType(TimePickerDialog), findsOneWidget);
+
+        // Simulate selecting the 'AM' button
+        await tester.tap(find.text('AM'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('OK'));
+        await tester.pumpAndSettle();
+
+        // Verify that the displayed date has been updated
+        expect(find.text('10:30 AM'), findsOneWidget);
       },
     );
   });
