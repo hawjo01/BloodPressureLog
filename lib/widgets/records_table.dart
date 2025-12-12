@@ -4,12 +4,13 @@ import 'package:intl/intl.dart';
 
 class RecordsTable extends StatelessWidget {
   const RecordsTable({super.key, required this.records});
-  
+
   final List<Record> records;
 
   @override
   Widget build(BuildContext context) {
     return DataTable(
+      columnSpacing: 20.0,
       columns: const [
         DataColumn(label: Text('Date')),
         DataColumn(
@@ -28,7 +29,9 @@ class RecordsTable extends StatelessWidget {
           .map(
             (record) => DataRow(
               cells: [
-                DataCell(Text(DateFormat('EEE hh:mm a').format(record.date))),
+                DataCell(
+                  Text(DateFormat('E MMM d hh:mm a').format(record.date)),
+                ),
                 DataCell(Text(record.systolic.toString())),
                 DataCell(Text(record.diastolic.toString())),
                 DataCell(Text(record.heartRate.toString())),
