@@ -51,6 +51,24 @@ void main() {
         // Verify that the callback was called with the correct date
         expect(selectedDate, isNotNull);
         expect(selectedDate!, equals(DateTime(2025, 5, 27)));
+
+        // Simulate tapping on the text field to open the date picker
+        await tester.tap(find.text('05-27-2025'));
+        await tester.pumpAndSettle();
+        expect(find.byType(DatePickerDialog), findsOneWidget);
+
+        // Simulate selecting the '10' day of the month
+        await tester.tap(find.text('10'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('OK'));
+        await tester.pumpAndSettle();
+
+        // Verify that the displayed date has been updated
+        expect(find.text('05-10-2025'), findsOneWidget);
+
+        // Verify that the callback was called with the correct date
+        expect(selectedDate, isNotNull);
+        expect(selectedDate!, equals(DateTime(2025, 5, 10)));
       },
     );
   });
