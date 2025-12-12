@@ -17,6 +17,20 @@ class TimePickerInputField extends StatefulWidget {
 class _TimePickerInputFieldState extends State<TimePickerInputField> {
   TimeOfDay? _selectedTime;
   final TextEditingController _timeController = TextEditingController();
+  
+  @override
+  void initState() {
+    _selectedTime = widget.initialTime;
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _timeController.text = _selectedTime != null
+        ? _selectedTime!.format(context)
+        : widget.initialTime.format(context);
+    super.didChangeDependencies();
+  }
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -37,10 +51,6 @@ class _TimePickerInputFieldState extends State<TimePickerInputField> {
 
   @override
   Widget build(BuildContext context) {
-    _timeController.text = _selectedTime != null
-        ? _selectedTime!.format(context)
-        : widget.initialTime.format(context);
-
     return TextFormField(
       controller: _timeController,
       readOnly: true, // Prevent direct text input
