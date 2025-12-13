@@ -56,6 +56,7 @@ class _InputScreenState extends State<InputScreen> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       bottomNavigationBar: NavigationBar(
         labelBehavior: labelBehavior,
         selectedIndex: currentPageIndex,

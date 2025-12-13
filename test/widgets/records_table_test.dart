@@ -41,7 +41,7 @@ void main() {
 
       // Verify that the 1st record is displayed
       expect(
-        find.text(DateFormat('EEE hh:mm a').format(records[0].date)),
+        find.text(DateFormat('E MMM d hh:mm a').format(records[0].date)),
         findsOneWidget,
       );
       expect(find.text(records[0].systolic.toString()), findsOneWidget);
@@ -50,7 +50,7 @@ void main() {
 
       // Verify that the 2nd record is displayed
       expect(
-        find.text(DateFormat('EEE hh:mm a').format(records[1].date)),
+        find.text(DateFormat('E MMM d hh:mm a').format(records[1].date)),
         findsOneWidget,
       );
       expect(find.text(records[1].systolic.toString()), findsOneWidget);
