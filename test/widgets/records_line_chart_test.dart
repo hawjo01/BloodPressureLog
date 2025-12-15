@@ -13,13 +13,13 @@ void main() {
           date: DateTime(2025, 5, 15, 14, 30),
           systolic: 120,
           diastolic: 80,
-          heartRate: 70,
+          pulse: 70,
         ),
         Record(
           date: DateTime(2025, 5, 16, 9, 15),
           systolic: 130,
           diastolic: 85,
-          heartRate: 75,
+          pulse: 75,
         ),
       ];
 
@@ -51,13 +51,13 @@ void main() {
           date: DateTime(2025, 5, 15, 14, 30),
           systolic: 120,
           diastolic: 80,
-          heartRate: 70,
+          pulse: 70,
         ),
         Record(
           date: DateTime(2025, 5, 16, 9, 15),
           systolic: 130,
           diastolic: 85,
-          heartRate: 75,
+          pulse: 75,
         ),
       ];
       final recordsLineChart = RecordsLineChart(
@@ -85,13 +85,13 @@ void main() {
           date: DateTime(2025, 5, 16, 14, 30),
           systolic: 120,
           diastolic: 80,
-          heartRate: 70,
+          pulse: 70,
         ),
         Record(
           date: DateTime(2025, 5, 16, 9, 15),
           systolic: 130,
           diastolic: 85,
-          heartRate: 75,
+          pulse: 75,
         ),
       ];
       final recordsLineChart = RecordsLineChart(

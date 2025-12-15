@@ -20,11 +20,18 @@ class RecordRepository {
 
     return await openDatabase(
       path!,
-      version: 1,
+      version: 2,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE records(id INTEGER PRIMARY KEY, date INTEGER, systolic INTEGER, diastolic INTEGER, heartRate INTEGER)',
+          'CREATE TABLE records(id INTEGER PRIMARY KEY, date INTEGER, systolic INTEGER, diastolic INTEGER, pulse INTEGER)',
         );
+      },
+      onUpgrade: (db, oldVersion, newVersion) => {
+        if (oldVersion < 2) {
+          db.execute(
+            'ALTER TABLE records RENAME COLUMN heartRate TO pulse',
+          )
+        }
       },
     );
   }

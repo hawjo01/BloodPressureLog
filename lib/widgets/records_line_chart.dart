@@ -130,7 +130,7 @@ class RecordsLineChart extends StatelessWidget {
     final buffer = StringBuffer('');
     buffer.write('\nSystolic:  ${record.systolic}');
     buffer.write('\nDiastolic: ${record.diastolic}');
-    buffer.write('\nPulse:     ${record.heartRate}');
+    buffer.write('\nPulse:     ${record.pulse}');
     return buffer.toString();
   }
 
