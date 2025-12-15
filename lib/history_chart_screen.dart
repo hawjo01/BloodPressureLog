@@ -1,11 +1,11 @@
-import 'package:bp_pulse_log/widgets/month_dropdown_menu.dart';
-import 'package:bp_pulse_log/widgets/records_line_chart.dart';
-import 'package:bp_pulse_log/widgets/records_table.dart';
-import 'package:bp_pulse_log/widgets/year_dropdown_menu.dart';
 import 'package:bp_pulse_log/db/record.dart';
 import 'package:bp_pulse_log/db/record_repository.dart';
+import 'package:bp_pulse_log/widgets/month_dropdown_menu.dart';
+import 'package:bp_pulse_log/widgets/records_line_chart.dart';
+import 'package:bp_pulse_log/widgets/records_share.dart';
+import 'package:bp_pulse_log/widgets/records_table.dart';
+import 'package:bp_pulse_log/widgets/year_dropdown_menu.dart';
 import 'package:flutter/material.dart';
-
 
 class HistoryChartScreen extends StatefulWidget {
   const HistoryChartScreen({super.key});
@@ -14,7 +14,7 @@ class HistoryChartScreen extends StatefulWidget {
   State<HistoryChartScreen> createState() => _HistoryChartScreenState();
 }
 
-enum ChartType { line, table }
+enum ChartType { line, table, pdf }
 
 class _HistoryChartScreenState extends State<HistoryChartScreen> {
   final List<int> _years = List.generate(5, (index) {
@@ -89,6 +89,11 @@ class _HistoryChartScreenState extends State<HistoryChartScreen> {
                     label: Text('Table'),
                     icon: Icon(Icons.table_chart_outlined),
                   ),
+                  ButtonSegment<ChartType>(
+                    value: ChartType.pdf,
+                    label: Text('PDF'),
+                    icon: Icon(Icons.picture_as_pdf_outlined),
+                  ),
                 ],
                 selected: <ChartType>{_selectedChartType},
                 onSelectionChanged: (Set<ChartType> newSelection) {
@@ -122,9 +127,19 @@ class _HistoryChartScreenState extends State<HistoryChartScreen> {
   Widget _buildChart(List<Record> records) {
     switch (_selectedChartType) {
       case ChartType.line:
-        return RecordsLineChart(records: records, year: _selectedYear, month: _selectedMonth);
+        return RecordsLineChart(
+          records: records,
+          year: _selectedYear,
+          month: _selectedMonth,
+        );
       case ChartType.table:
         return RecordsTable(records: records);
+      case ChartType.pdf:
+        return RecordsShare(
+          records: records,
+          year: _selectedYear,
+          month: _selectedMonth,
+        );
     }
   }
 }
