@@ -1,7 +1,9 @@
 import 'package:bp_pulse_log/db/record.dart';
+import 'package:bp_pulse_log/utils/datetime_utils.dart';
 import 'package:bp_pulse_log/utils/line_chart_utils.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class RecordsLineChart extends StatelessWidget {
   const RecordsLineChart({
@@ -69,10 +71,71 @@ class RecordsLineChart extends StatelessWidget {
           maxY: maxY + 10,
           lineBarsData: [
             _lineChartBarData(systolics, Colors.blue),
-            _lineChartBarData(diastolics, Colors.red),
+            _lineChartBarData(diastolics, Colors.deepPurple),
           ],
+          lineTouchData: LineTouchData(
+            touchTooltipData: LineTouchTooltipData(
+              maxContentWidth: 200,
+              getTooltipColor: (touchedSpot) => Colors.grey.shade200,
+              getTooltipItems: (touchedSpots) {
+                return touchedSpots.map((spot) {
+                  // Only build a toolip for the first spot find on an index line as it will be triggered for all spots on the same x-axis line
+                  if (spot.barIndex == 0) {
+                    return buildLineToolTip(spot.spotIndex);
+                  } else {
+                    return null;
+                  }
+                }).toList();
+              },
+            ),
+          ),
         ),
       ),
+    );
+  }
+
+  // Handling building a tooltip that may contain multiple records for the same day
+  LineTooltipItem buildLineToolTip(int index) {
+    final Record record = records[index];
+    final List<Record> dateRecords = records
+        .where((r) => DateTimeUtils.isSameDay(r.date, record.date))
+        .toList();
+    dateRecords.sort((a, b) => a.date.compareTo(b.date));
+
+    final children = <TextSpan>[];
+    for (var r in dateRecords) {
+      children.add(
+        TextSpan(
+          text: '\nTime:      ${DateFormat('hh:mm a').format(r.date)}',
+          style: const TextStyle(fontFamily: 'monospace'),
+        ),
+      );
+      children.add(
+        TextSpan(
+          text: '\nSystolic:  ${r.systolic}',
+          style: const TextStyle(fontFamily: 'monospace'),
+        ),
+      );
+      children.add(
+        TextSpan(
+          text: '\nDiastolic: ${r.diastolic}',
+          style: const TextStyle(fontFamily: 'monospace'),
+        ),
+      );
+      children.add(
+        TextSpan(
+          text: '\nPulse:     ${r.heartRate}',
+          style: const TextStyle(fontFamily: 'monospace'),
+        ),
+      );
+    }
+
+    final label = DateFormat('EEEE MMMM d\n').format(record.date);
+    return LineTooltipItem(
+      label.toString(),
+      const TextStyle(color: Colors.black),
+      textAlign: TextAlign.start,
+      children: children,
     );
   }
 
