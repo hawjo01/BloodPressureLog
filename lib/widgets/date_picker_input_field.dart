@@ -16,35 +16,38 @@ class DatePickerInputField extends StatefulWidget {
 }
 
 class _DatePickerInputFieldState extends State<DatePickerInputField> {
-  DateTime? _selectedDate;
   final TextEditingController _dateController = TextEditingController();
+  late DateTime _selectedDate;
+
+  @override
+  void initState() {
+    _selectedDate = widget.initialDate;
+    _dateController.text = _formatDate(_selectedDate);
+    super.initState();
+  } 
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? widget.initialDate,
+      initialDate: _selectedDate,
       firstDate: DateTime(DateTime.now().year - 1),
       lastDate: DateTime(DateTime.now().year + 1),
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _dateController.text = formatDate(_selectedDate!);
+        _dateController.text = _formatDate(_selectedDate);
       });
       widget.onDateChanged(picked);
     }
   }
 
-  String formatDate(DateTime date) {
+  String _formatDate(DateTime date) {
     return DateFormat('MM-dd-yyyy').format(date);
   }
 
   @override
   Widget build(BuildContext context) {
-    _dateController.text = _selectedDate != null
-        ? formatDate(_selectedDate!)
-        : formatDate(widget.initialDate);
-
     return TextFormField(
       controller: _dateController,
       readOnly: true, // Prevent direct text input
