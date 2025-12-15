@@ -68,16 +68,15 @@ void main() {
       final tooltip = recordsLineChart.buildLineToolTip(1);
 
       expect(tooltip.textAlign, TextAlign.start);
-      expect(tooltip.text, 'Friday May 16\n');
-      expect(tooltip.children!.length, 4);
-      expect(tooltip.children![0].toPlainText(), contains('Time:'));
-      expect(tooltip.children![0].toPlainText(), contains('09:15 AM'));
+      expect(tooltip.text, 'Friday May 16');
+      expect(tooltip.children!.length, 2);
+      expect(tooltip.children![0].toPlainText(), contains('9:15 AM'));
       expect(tooltip.children![1].toPlainText(), contains('Systolic:'));
       expect(tooltip.children![1].toPlainText(), contains('130'));
-      expect(tooltip.children![2].toPlainText(), contains('Diastolic:'));
-      expect(tooltip.children![2].toPlainText(), contains('85'));
-      expect(tooltip.children![3].toPlainText(), contains('Pulse:'));
-      expect(tooltip.children![3].toPlainText(), contains('75'));
+      expect(tooltip.children![1].toPlainText(), contains('Diastolic:'));
+      expect(tooltip.children![1].toPlainText(), contains('85'));
+      expect(tooltip.children![1].toPlainText(), contains('Pulse:'));
+      expect(tooltip.children![1].toPlainText(), contains('75'));
     });
 
     test('buildLineToolTip - 2 date records', () {
@@ -103,24 +102,22 @@ void main() {
       final tooltip = recordsLineChart.buildLineToolTip(1);
 
       expect(tooltip.textAlign, TextAlign.start);
-      expect(tooltip.text, 'Friday May 16\n');
-      expect(tooltip.children!.length, 8);
-      expect(tooltip.children![0].toPlainText(), contains('Time:'));
-      expect(tooltip.children![0].toPlainText(), contains('09:15 AM'));
+      expect(tooltip.text, 'Friday May 16');
+      expect(tooltip.children!.length, 4);
+      expect(tooltip.children![0].toPlainText(), contains('9:15 AM'));
       expect(tooltip.children![1].toPlainText(), contains('Systolic:'));
       expect(tooltip.children![1].toPlainText(), contains('130'));
-      expect(tooltip.children![2].toPlainText(), contains('Diastolic:'));
-      expect(tooltip.children![2].toPlainText(), contains('85'));
+      expect(tooltip.children![1].toPlainText(), contains('Diastolic:'));
+      expect(tooltip.children![1].toPlainText(), contains('85'));
+      expect(tooltip.children![1].toPlainText(), contains('Pulse:'));
+      expect(tooltip.children![1].toPlainText(), contains('75'));
+      expect(tooltip.children![2].toPlainText(), contains('2:30 PM'));
+      expect(tooltip.children![3].toPlainText(), contains('Systolic:'));
+      expect(tooltip.children![3].toPlainText(), contains('120'));
+      expect(tooltip.children![3].toPlainText(), contains('Diastolic:'));
+      expect(tooltip.children![3].toPlainText(), contains('80'));
       expect(tooltip.children![3].toPlainText(), contains('Pulse:'));
-      expect(tooltip.children![3].toPlainText(), contains('75'));
-      expect(tooltip.children![4].toPlainText(), contains('Time:'));
-      expect(tooltip.children![4].toPlainText(), contains('02:30 PM'));
-      expect(tooltip.children![5].toPlainText(), contains('Systolic:'));
-      expect(tooltip.children![5].toPlainText(), contains('120'));
-      expect(tooltip.children![6].toPlainText(), contains('Diastolic:'));
-      expect(tooltip.children![6].toPlainText(), contains('80'));
-      expect(tooltip.children![7].toPlainText(), contains('Pulse:'));
-      expect(tooltip.children![7].toPlainText(), contains('70'));
+      expect(tooltip.children![3].toPlainText(), contains('70'));
     });
   });
 }

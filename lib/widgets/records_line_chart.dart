@@ -96,8 +96,8 @@ class RecordsLineChart extends StatelessWidget {
 
   // Handling building a tooltip that may contain multiple records for the same day
   LineTooltipItem buildLineToolTip(int index) {
-    final Record record = records[index];
-    final List<Record> dateRecords = records
+    final record = records[index];
+    final dateRecords = records
         .where((r) => DateTimeUtils.isSameDay(r.date, record.date))
         .toList();
     dateRecords.sort((a, b) => a.date.compareTo(b.date));
@@ -106,37 +106,32 @@ class RecordsLineChart extends StatelessWidget {
     for (var r in dateRecords) {
       children.add(
         TextSpan(
-          text: '\nTime:      ${DateFormat('hh:mm a').format(r.date)}',
-          style: const TextStyle(fontFamily: 'monospace'),
+          text: DateFormat('\n\nh:mm a').format(r.date),
         ),
       );
       children.add(
         TextSpan(
-          text: '\nSystolic:  ${r.systolic}',
-          style: const TextStyle(fontFamily: 'monospace'),
-        ),
-      );
-      children.add(
-        TextSpan(
-          text: '\nDiastolic: ${r.diastolic}',
-          style: const TextStyle(fontFamily: 'monospace'),
-        ),
-      );
-      children.add(
-        TextSpan(
-          text: '\nPulse:     ${r.heartRate}',
+          text: _buildRecordTooltipText(r),
           style: const TextStyle(fontFamily: 'monospace'),
         ),
       );
     }
 
-    final label = DateFormat('EEEE MMMM d\n').format(record.date);
+    final label = DateFormat('EEEE MMMM d').format(record.date);
     return LineTooltipItem(
       label.toString(),
       const TextStyle(color: Colors.black),
       textAlign: TextAlign.start,
       children: children,
     );
+  }
+
+  String _buildRecordTooltipText(Record record) {
+    final buffer = StringBuffer('');
+    buffer.write('\nSystolic:  ${record.systolic}');
+    buffer.write('\nDiastolic: ${record.diastolic}');
+    buffer.write('\nPulse:     ${record.heartRate}');
+    return buffer.toString();
   }
 
   double _getMaxX() {
