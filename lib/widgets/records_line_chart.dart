@@ -75,6 +75,8 @@ class RecordsLineChart extends StatelessWidget {
           ],
           lineTouchData: LineTouchData(
             touchTooltipData: LineTouchTooltipData(
+              fitInsideVertically: true,
+              fitInsideHorizontally: true,
               maxContentWidth: 200,
               getTooltipColor: (touchedSpot) => Colors.grey.shade200,
               getTooltipItems: (touchedSpots) {
