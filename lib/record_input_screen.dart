@@ -69,7 +69,7 @@ class _RecordInputScreenState extends State<RecordInputScreen> {
       ),
       systolic: _systolic!,
       diastolic: _diastolic!,
-      heartRate: _pulse!,
+      pulse: _pulse!,
     );
     await recordRepository.insertRecord(record);
 
@@ -198,7 +198,7 @@ class _RecordInputScreenState extends State<RecordInputScreen> {
                       DateFormat('EEE, MMM d, y h:mm a').format(record.date),
                     ),
                     subtitle: Text(
-                      'Systolic: ${record.systolic}, Diastolic: ${record.diastolic}, Pulse: ${record.heartRate}',
+                      'Systolic: ${record.systolic}, Diastolic: ${record.diastolic}, Pulse: ${record.pulse}',
                     ),
                   );
                 }

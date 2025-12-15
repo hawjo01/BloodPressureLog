@@ -34,7 +34,7 @@ class RecordsTable extends StatelessWidget {
                 ),
                 DataCell(Text(record.systolic.toString())),
                 DataCell(Text(record.diastolic.toString())),
-                DataCell(Text(record.heartRate.toString())),
+                DataCell(Text(record.pulse.toString())),
               ],
             ),
           )

@@ -41,7 +41,7 @@ void main() {
       date: DateTime.now(),
       systolic: 120,
       diastolic: 80,
-      heartRate: 70,
+      pulse: 70,
     );
 
     await recordRepository!.insertRecord(record);
@@ -50,7 +50,7 @@ void main() {
     expect(mostRecent, isNotNull);
     expect(mostRecent!.systolic, 120);
     expect(mostRecent.diastolic, 80);
-    expect(mostRecent.heartRate, 70);
+    expect(mostRecent.pulse, 70);
     expect(mostRecent.id, isNotNull);
 
     final List<Record> mostRecentRecords = await recordRepository!
@@ -58,7 +58,7 @@ void main() {
     expect(mostRecentRecords.length, 1);
     expect(mostRecentRecords[0].systolic, 120);
     expect(mostRecentRecords[0].diastolic, 80);
-    expect(mostRecentRecords[0].heartRate, 70);
+    expect(mostRecentRecords[0].pulse, 70);
     expect(mostRecentRecords[0].id, isNotNull);
 
     final List<Record> monthRecords = await recordRepository!
@@ -66,7 +66,7 @@ void main() {
     expect(monthRecords.length, 1);
     expect(monthRecords[0].systolic, 120);
     expect(monthRecords[0].diastolic, 80);
-    expect(monthRecords[0].heartRate, 70);
+    expect(monthRecords[0].pulse, 70);
   });
 
   test('insert and retrieve multiple records', () async {
@@ -79,21 +79,21 @@ void main() {
       date: DateTime(2025, 12, 15, 11, 08),
       systolic: 120,
       diastolic: 80,
-      heartRate: 70,
+      pulse: 70,
     );
 
     Record record2 = Record(
       date: DateTime(2025, 12, 14, 14, 30),
       systolic: 130,
       diastolic: 90,
-      heartRate: 80,
+      pulse: 80,
     );
 
     Record record3 = Record(
       date: DateTime(2025, 12, 13, 10, 15),
       systolic: 125,
       diastolic: 85,
-      heartRate: 75,
+      pulse: 75,
     );
 
     // Different month than previous 3 records
@@ -101,7 +101,7 @@ void main() {
       date: DateTime(2025, 11, 13, 8, 02),
       systolic: 125,
       diastolic: 85,
-      heartRate: 75,
+      pulse: 75,
     );
 
     await recordRepository!.insertRecord(record1);
@@ -114,7 +114,7 @@ void main() {
     expect(mostRecent, isNotNull);
     expect(mostRecent!.systolic, record1.systolic);
     expect(mostRecent.diastolic, record1.diastolic);
-    expect(mostRecent.heartRate, record1.heartRate);
+    expect(mostRecent.pulse, record1.pulse);
     expect(mostRecent.id, isNotNull);
 
     final List<Record> mostRecentRecords = await recordRepository!
@@ -122,12 +122,12 @@ void main() {
     expect(mostRecentRecords.length, 2);
     expect(mostRecentRecords[0].systolic, record1.systolic);
     expect(mostRecentRecords[0].diastolic, record1.diastolic);
-    expect(mostRecentRecords[0].heartRate, record1.heartRate);
+    expect(mostRecentRecords[0].pulse, record1.pulse);
     expect(mostRecentRecords[0].id, isNotNull);
 
     expect(mostRecentRecords[1].systolic, record2.systolic);
     expect(mostRecentRecords[1].diastolic, record2.diastolic);
-    expect(mostRecentRecords[1].heartRate, record2.heartRate);
+    expect(mostRecentRecords[1].pulse, record2.pulse);
     expect(mostRecentRecords[1].id, isNotNull);
 
     final List<Record> monthRecords = await recordRepository!
@@ -135,14 +135,14 @@ void main() {
     expect(monthRecords.length, 3);
     expect(monthRecords[0].systolic, record1.systolic);
     expect(monthRecords[0].diastolic, record1.diastolic);
-    expect(monthRecords[0].heartRate, record1.heartRate);
+    expect(monthRecords[0].pulse, record1.pulse);
 
     expect(monthRecords[1].systolic, record2.systolic);
     expect(monthRecords[1].diastolic, record2.diastolic);
-    expect(monthRecords[1].heartRate, record2.heartRate);
+    expect(monthRecords[1].pulse, record2.pulse);
 
     expect(monthRecords[2].systolic, record3.systolic);
     expect(monthRecords[2].diastolic, record3.diastolic);
-    expect(monthRecords[2].heartRate, record3.heartRate);
+    expect(monthRecords[2].pulse, record3.pulse);
   });
 }

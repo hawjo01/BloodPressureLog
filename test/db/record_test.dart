@@ -10,7 +10,7 @@ void main() {
         date: DateTime(2025, 1, 1),
         systolic: 120,
         diastolic: 80,
-        heartRate: 70,
+        pulse: 70,
       );
 
       final recordMap = record.toMap();
@@ -21,7 +21,7 @@ void main() {
       );
       expect(recordMap['systolic'], equals(120));
       expect(recordMap['diastolic'], equals(80));
-      expect(recordMap['heartRate'], equals(70));
+      expect(recordMap['pulse'], equals(70));
 
       final newRecord = r.Record.fromMap(recordMap);
 
@@ -29,7 +29,7 @@ void main() {
       expect(newRecord.date, equals(record.date));
       expect(newRecord.systolic, equals(record.systolic));
       expect(newRecord.diastolic, equals(record.diastolic));
-      expect(newRecord.heartRate, equals(record.heartRate));
+      expect(newRecord.pulse, equals(record.pulse));
     });
 
     test('toString', () {
@@ -38,14 +38,14 @@ void main() {
         date: DateTime(2025, 2, 2),
         systolic: 130,
         diastolic: 85,
-        heartRate: 75,
+        pulse: 75,
       );
 
       final recordString = record.toString();
       expect(
         recordString,
         equals(
-          'Record{id: 2, date: 2025-02-02 00:00:00.000, systolic: 130, diastolic: 85, heartRate: 75}',
+          'Record{id: 2, date: 2025-02-02 00:00:00.000, systolic: 130, diastolic: 85, pulse: 75}',
         ),
       );
     });
