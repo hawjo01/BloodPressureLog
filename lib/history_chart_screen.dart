@@ -1,4 +1,4 @@
-import 'package:bp_pulse_log/db/record.dart';
+import 'package:bp_pulse_log/data/single_month_records.dart';
 import 'package:bp_pulse_log/db/record_repository.dart';
 import 'package:bp_pulse_log/widgets/month_dropdown_menu.dart';
 import 'package:bp_pulse_log/widgets/records_line_chart.dart';
@@ -24,7 +24,7 @@ class _HistoryChartScreenState extends State<HistoryChartScreen> {
   int _selectedYear = DateTime.now().year;
   int _selectedMonth = DateTime.now().month;
   ChartType _selectedChartType = ChartType.line;
-  late Future<List<Record>> _recordsFuture;
+  late Future<SingleMonthRecords> _recordsFuture;
 
   @override
   void initState() {
@@ -46,9 +46,9 @@ class _HistoryChartScreenState extends State<HistoryChartScreen> {
     });
   }
 
-  Future<List<Record>> _getRecordsForMonth(int year, int month) async {
+  Future<SingleMonthRecords> _getRecordsForMonth(int year, int month) async {
     RecordRepository recordRepository = RecordRepository();
-    return await recordRepository.getRecordsForMonth(year, month);
+    return await recordRepository.getSingleMonthRecords(year, month);
   }
 
   @override
@@ -104,18 +104,18 @@ class _HistoryChartScreenState extends State<HistoryChartScreen> {
               ),
             ],
           ),
-          FutureBuilder<List<Record>>(
+          FutureBuilder<SingleMonthRecords>(
             future: _recordsFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              } else if (!snapshot.hasData || snapshot.data!.records.isEmpty) {
                 return const Text('No records found.');
               } else {
-                final records = snapshot.data!;
-                return Container(child: _buildChart(records));
+                final singleMonthRecords = snapshot.data!;
+                return Container(child: _buildChart(singleMonthRecords));
               }
             },
           ),
@@ -124,22 +124,18 @@ class _HistoryChartScreenState extends State<HistoryChartScreen> {
     );
   }
 
-  Widget _buildChart(List<Record> records) {
+  Widget _buildChart(SingleMonthRecords singleMonthRecords) {
     switch (_selectedChartType) {
       case ChartType.line:
         return RecordsLineChart(
-          records: records,
-          year: _selectedYear,
-          month: _selectedMonth,
+          records: singleMonthRecords.records,
+          year: singleMonthRecords.year,
+          month: singleMonthRecords.month,
         );
       case ChartType.table:
-        return RecordsTable(records: records);
+        return RecordsTable(records: singleMonthRecords.records);
       case ChartType.pdf:
-        return RecordsShare(
-          records: records,
-          year: _selectedYear,
-          month: _selectedMonth,
-        );
+        return RecordsShare(monthRecords: singleMonthRecords);
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bp_pulse_log/data/single_month_records.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'record.dart';
@@ -69,7 +70,7 @@ class RecordRepository {
     });
   }
 
-  Future<List<Record>> getRecordsForMonth(int year, int month) async {
+  Future<SingleMonthRecords> getSingleMonthRecords(int year, int month) async {
     final db = await database;
     final int startTimestamp = DateTime(year, month, 1).millisecondsSinceEpoch;
     final int endTimestamp = DateTime(year, month + 1, 1).millisecondsSinceEpoch;
@@ -81,9 +82,11 @@ class RecordRepository {
       orderBy: 'date DESC',
     );
 
-    return List.generate(maps.length, (i) {
+    final List<Record> records = List.generate(maps.length, (i) {
       return Record.fromMap(maps[i]);
     });
+
+    return SingleMonthRecords(year: year, month: month, records: records);
   }
 
   void close() async {

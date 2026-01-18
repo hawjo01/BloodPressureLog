@@ -1,23 +1,18 @@
 import 'dart:io';
 
-import 'package:bp_pulse_log/db/record.dart';
+import 'package:bp_pulse_log/data/single_month_records.dart';
 import 'package:bp_pulse_log/reports/records_pdf.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class RecordsShare extends StatelessWidget {
   const RecordsShare({
     super.key,
-    required this.records,
-    required this.year,
-    required this.month,
+    required this.monthRecords,
   });
 
-  final List<Record> records;
-  final int year;
-  final int month;
+  final SingleMonthRecords monthRecords;
 
   void _deleteOldFiles(Directory directory) {
     final files = directory.listSync();
@@ -34,10 +29,9 @@ class RecordsShare extends StatelessWidget {
   }
 
   Future<File> _exportToPdf(Directory directory) async {
-    final pdf = RecordsPdf.generateMonthPdf(records, year, month);
+    final pdf = RecordsPdf.generateMonthPdf(monthRecords.records, monthRecords.year, monthRecords.month);
 
-    final fileDate = DateFormat('MMMM-yyyy').format(DateTime(year, month));
-    final fileName = 'bp-records-$fileDate.pdf';
+    final fileName = 'bp-records-${monthRecords.monthName()}-${monthRecords.year}.pdf';
 
     // Save the PDF file to a temporary directory
     final file = File('${directory.path}/$fileName');
@@ -54,14 +48,11 @@ class RecordsShare extends StatelessWidget {
 
     final pdfFile = await _exportToPdf(tempDir);
 
-    String monthName = DateFormat('MMMM').format(DateTime(year, month));
-
-
     // Share the generated PDF file
     await SharePlus.instance.share(
       ShareParams(
         subject: 'Blood Pressure Log',
-        text: 'Blood Pressure log for $monthName $year',
+        text: 'Blood Pressure log for ${monthRecords.monthName()} ${monthRecords.year}',
         files: [XFile(pdfFile.path)],
       ),
     );

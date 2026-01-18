@@ -26,15 +26,17 @@ void main() {
         .getMostRecentRecords(10);
     expect(mostRecentRecords, isEmpty);
 
-    final List<Record> monthRecords = await recordRepository!
-        .getRecordsForMonth(2025, 11);
-    expect(monthRecords, isEmpty);
+    final singleMonthRecords = await recordRepository!.getSingleMonthRecords(
+      2025,
+      11,
+    );
+    expect(singleMonthRecords.month, 11);
+    expect(singleMonthRecords.year, 2025);
+    expect(singleMonthRecords.records, isEmpty);
   });
 
   test('insert and retrieve a single record', () async {
-    final List<Record> noRecords = await recordRepository!.getMostRecentRecords(
-      10,
-    );
+    final noRecords = await recordRepository!.getMostRecentRecords(10);
     expect(noRecords, isEmpty);
 
     Record record = Record(
@@ -45,7 +47,7 @@ void main() {
     );
 
     await recordRepository!.insertRecord(record);
-    final Record? mostRecent = await recordRepository!.getMostRecentRecord();
+    final mostRecent = await recordRepository!.getMostRecentRecord();
 
     expect(mostRecent, isNotNull);
     expect(mostRecent!.systolic, 120);
@@ -53,20 +55,23 @@ void main() {
     expect(mostRecent.pulse, 70);
     expect(mostRecent.id, isNotNull);
 
-    final List<Record> mostRecentRecords = await recordRepository!
-        .getMostRecentRecords(2);
+    final mostRecentRecords = await recordRepository!.getMostRecentRecords(2);
     expect(mostRecentRecords.length, 1);
     expect(mostRecentRecords[0].systolic, 120);
     expect(mostRecentRecords[0].diastolic, 80);
     expect(mostRecentRecords[0].pulse, 70);
     expect(mostRecentRecords[0].id, isNotNull);
 
-    final List<Record> monthRecords = await recordRepository!
-        .getRecordsForMonth(record.date.year, record.date.month);
-    expect(monthRecords.length, 1);
-    expect(monthRecords[0].systolic, 120);
-    expect(monthRecords[0].diastolic, 80);
-    expect(monthRecords[0].pulse, 70);
+    final singleMonthRecords = await recordRepository!.getSingleMonthRecords(
+      record.date.year,
+      record.date.month,
+    );
+    expect(singleMonthRecords.month, record.date.month);
+    expect(singleMonthRecords.year, record.date.year);
+    expect(singleMonthRecords.records.length, 1);
+    expect(singleMonthRecords.records[0].systolic, 120);
+    expect(singleMonthRecords.records[0].diastolic, 80);
+    expect(singleMonthRecords.records[0].pulse, 70);
   });
 
   test('insert and retrieve multiple records', () async {
@@ -130,19 +135,23 @@ void main() {
     expect(mostRecentRecords[1].pulse, record2.pulse);
     expect(mostRecentRecords[1].id, isNotNull);
 
-    final List<Record> monthRecords = await recordRepository!
-        .getRecordsForMonth(record1.date.year, record1.date.month);
-    expect(monthRecords.length, 3);
-    expect(monthRecords[0].systolic, record1.systolic);
-    expect(monthRecords[0].diastolic, record1.diastolic);
-    expect(monthRecords[0].pulse, record1.pulse);
+    final singleMonthRecords = await recordRepository!.getSingleMonthRecords(
+      record1.date.year,
+      record1.date.month,
+    );
+    expect(singleMonthRecords.month, record1.date.month);
+    expect(singleMonthRecords.year, record1.date.year);
+    expect(singleMonthRecords.records.length, 3);
+    expect(singleMonthRecords.records[0].systolic, record1.systolic);
+    expect(singleMonthRecords.records[0].diastolic, record1.diastolic);
+    expect(singleMonthRecords.records[0].pulse, record1.pulse);
 
-    expect(monthRecords[1].systolic, record2.systolic);
-    expect(monthRecords[1].diastolic, record2.diastolic);
-    expect(monthRecords[1].pulse, record2.pulse);
+    expect(singleMonthRecords.records[1].systolic, record2.systolic);
+    expect(singleMonthRecords.records[1].diastolic, record2.diastolic);
+    expect(singleMonthRecords.records[1].pulse, record2.pulse);
 
-    expect(monthRecords[2].systolic, record3.systolic);
-    expect(monthRecords[2].diastolic, record3.diastolic);
-    expect(monthRecords[2].pulse, record3.pulse);
+    expect(singleMonthRecords.records[2].systolic, record3.systolic);
+    expect(singleMonthRecords.records[2].diastolic, record3.diastolic);
+    expect(singleMonthRecords.records[2].pulse, record3.pulse);
   });
 }
